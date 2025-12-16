@@ -30,7 +30,17 @@ public class VacuumCleaner {
         return suctionLevel;
     }
 
+    public boolean getPowerState () {
+        return powerState;
+    }
 
+    public void powerStateOn () {
+        powerState = true;
+    }
+
+    public void powerStateOff () {
+        powerState = false;
+    }
 
     public void addSuctionLevel (int amount) {
         suctionLevel += amount;
