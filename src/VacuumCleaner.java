@@ -26,6 +26,9 @@ public class VacuumCleaner {
         dirtLevel = 0; //vacuum cleaner dirt is 0
         System.out.println("OBJECT IS CREATED....");
     }
+    public int getSuctionLevel () {
+        return suctionLevel;
+    }
 
 
 
