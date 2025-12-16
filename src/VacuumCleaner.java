@@ -20,15 +20,18 @@ public class VacuumCleaner {
     private float dirtLevel;
 
     //operations or functionality
-    VacuumCleaner(){
-        suctionLevel = 1; //lowest suction
+    VacuumCleaner(int suctionLevel, int batteryLevel, float dirtLevel) {
+        this.suctionLevel = 1; //lowest suction
         powerState = false; // off
-        batteryLevel = 100; // fully charged
-        dirtLevel = 0; //vacuum cleaner dirt is 0
+        this.batteryLevel = 100; // fully charged
+        this.dirtLevel = 0; //vacuum cleaner dirt is 0
 
 
         System.out.println("OBJECT IS CREATED....");
     }
+    //Observers(accessor or getter)
+
+
 
     public int getSuctionLevel () {
         return suctionLevel;
