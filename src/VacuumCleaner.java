@@ -13,6 +13,7 @@ public class VacuumCleaner {
        4. throw dirt away when dirt level is high
 
      */
+
     //datafields
     private boolean powerState;
     private int suctionLevel, batteryLevel;
@@ -28,6 +29,7 @@ public class VacuumCleaner {
 
         System.out.println("OBJECT IS CREATED....");
     }
+
     public int getSuctionLevel () {
         return suctionLevel;
     }
