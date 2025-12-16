@@ -58,7 +58,7 @@ public class VacuumCleaner {
         return MAX_DIRT;
     }
     public void addSuctionLevel () {
-        if (suctionLevel <= 3) {
+        if (suctionLevel < 3) {
             suctionLevel ++;
             System.out.println("Suction Level: "+ suctionLevel);
         } else{
@@ -67,7 +67,7 @@ public class VacuumCleaner {
     }
 
     public void minusSuctionLevel () {
-        if (suctionLevel >= 0) {
+        if (suctionLevel > 0) {
             suctionLevel --;
             System.out.println("Suction Level: "+ suctionLevel);
 
