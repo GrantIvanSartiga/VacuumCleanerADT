@@ -20,10 +20,12 @@ public class VacuumCleaner {
 
     //operations or functionality
     VacuumCleaner(){
-        suctionLevel = 1;
-        powerState = false;
+        suctionLevel = 1; //lowest suction
+        powerState = false; // off
         batteryLevel = 100; // fully charged
         dirtLevel = 0; //vacuum cleaner dirt is 0
+
+
         System.out.println("OBJECT IS CREATED....");
     }
 
