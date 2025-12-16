@@ -32,6 +32,16 @@ public class VacuumCleaner {
 
 
 
+    public void addSuctionLevel (int amount) {
+        suctionLevel += amount;
+    }
+
+    public void minusSuctionLevel (int amount) {
+        suctionLevel -= amount;
+    }
+
+
+
 
 
 }
