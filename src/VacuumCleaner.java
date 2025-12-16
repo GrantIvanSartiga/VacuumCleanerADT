@@ -28,6 +28,19 @@ public class VacuumCleaner {
 
         System.out.println("OBJECT IS CREATED....");
     }
+    public int getSuctionLevel () {
+        return suctionLevel;
+    }
+
+
+
+    public void addSuctionLevel (int amount) {
+        suctionLevel += amount;
+    }
+
+    public void minusSuctionLevel (int amount) {
+        suctionLevel -= amount;
+    }
 
 
 
