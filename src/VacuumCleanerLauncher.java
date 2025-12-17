@@ -8,9 +8,17 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
 
     private VacuumCleaner vacuumCleaner;
     private JLabel statusLabel;
-    private JButton upButton, downButton, useButton, emptyButton, chargeButton;
+
+    private JButton leftButton, rightButton, useButton, emptyButton, chargeButton;
+
     private JLabel gifLabel;
     private ImageIcon vacuumGifSlow, vacuumGifMedium, vacuumGifFast, vacuumPaused;
+
+    private ImageIcon leftIcon, rightIcon, useIcon, emptyIcon, chargeIcon;
+
+    // --- Custom Colors ---
+    private final Color LIGHT_BACKGROUND = new Color(0xFCF0AF); // Cream/Yellow
+    private final Color DARK_ACCENT = new Color(0x192B7E);      // Dark Navy/Indigo
 
 
     public VacuumCleanerLauncher() {
@@ -22,31 +30,42 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
         setLayout(new BorderLayout(10, 10));
         setSize(500, 600);
         setLocationRelativeTo(null);
+
+        // APPLY COLOR 1: Main background
+        getContentPane().setBackground(LIGHT_BACKGROUND);
         ((JPanel) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // 2. Create Top Panel (GIF + Status)
         JPanel topPanel = new JPanel(new BorderLayout(10, 10));
         topPanel.setPreferredSize(new Dimension(500, 300));
 
-        // Create GIF Label with resized images
-        ImageIcon originalSlow = new ImageIcon(
-                Objects.requireNonNull(getClass().getResource("vacuumGifSlow.gif"))
-        );
-        ImageIcon originalMedium = new ImageIcon(
-                Objects.requireNonNull(getClass().getResource("vacuumGifMedium.gif"))
-        );
-        ImageIcon originalFast = new ImageIcon(
-                Objects.requireNonNull(getClass().getResource("vacuumGifFast.gif"))
-        );
-        ImageIcon originalPaused = new ImageIcon(
-                Objects.requireNonNull(getClass().getResource("vacuumPaused.png"))
-        );
+        // APPLY COLOR 2: Top panel background
+        topPanel.setBackground(LIGHT_BACKGROUND);
 
-        // Resize images to fit the panel (150x150)
-        vacuumGifSlow = new ImageIcon(originalSlow.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
-        vacuumGifMedium = new ImageIcon(originalMedium.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
-        vacuumGifFast = new ImageIcon(originalFast.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
-        vacuumPaused = new ImageIcon(originalPaused.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        // --- Load GIFs and Control Icons ---
+
+        int iconSize = 60;
+        try {
+            leftIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("left_icon.png")))
+                    .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+            rightIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("right_icon.png")))
+                    .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+
+            useIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("use_icon.png")))
+                    .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+            emptyIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("empty_icon.png")))
+                    .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+            chargeIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("charge_icon.png")))
+                    .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+        } catch (Exception e) {
+            System.err.println("Error loading control icons. Ensure icon files are in the resources folder: " + e.getMessage());
+        }
+
+        // GIF Loading (Resized)
+        vacuumGifSlow = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("vacuumGifSlow.gif"))).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        vacuumGifMedium = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("vacuumGifMedium.gif"))).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        vacuumGifFast = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("vacuumGifFast.gif"))).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        vacuumPaused = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("vacuumPaused.png"))).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
 
         gifLabel = new JLabel(vacuumPaused);
         gifLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,35 +77,105 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
         statusLabel = new JLabel("", SwingConstants.CENTER);
         statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12));
         statusLabel.setPreferredSize(new Dimension(500, 150));
-        topPanel.add(statusLabel, BorderLayout.NORTH);
 
+        // APPLY COLOR 3: Set Status Label text color
+        statusLabel.setForeground(DARK_ACCENT);
+
+        topPanel.add(statusLabel, BorderLayout.NORTH);
         add(topPanel, BorderLayout.NORTH);
 
-        // 3. Create the Control Panel (for buttons)
-        JPanel controlPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-        controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+        // 3. Create the Control Panel (Main Container)
 
-        // 4. Initialize Buttons
-        upButton = new JButton("Strength UP (MAX 3)");
-        downButton = new JButton("Strength DOWN (MIN 0)");
-        useButton = new JButton("USE (1 Cycle)");
-        emptyButton = new JButton("EMPTY DUST");
-        chargeButton = new JButton("CHARGE (30s Wait)");
+        // Use BorderLayout for the main control area
+        JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
+
+        // APPLY COLOR 4: Control panel background and reinforced border style
+        controlPanel.setBackground(LIGHT_BACKGROUND);
+
+        controlPanel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(DARK_ACCENT, 3),
+                        "Controls",
+                        javax.swing.border.TitledBorder.CENTER,
+                        javax.swing.border.TitledBorder.TOP,
+                        new Font("Arial", Font.BOLD, 14),
+                        DARK_ACCENT
+                )
+        );
+
+        // 4. Initialize Buttons (Icon-Only and Borderless)
+
+        // LEFT BUTTON (Decrease Strength)
+        leftButton = new JButton(leftIcon);
+        leftButton.setActionCommand("Strength LEFT (MIN 0)");
+        leftButton.setBorderPainted(false);
+        leftButton.setContentAreaFilled(false);
+        leftButton.setFocusPainted(false);
+        leftButton.setOpaque(false);
+
+        // RIGHT BUTTON (Increase Strength)
+        rightButton = new JButton(rightIcon);
+        rightButton.setActionCommand("Strength RIGHT (MAX 3)");
+        rightButton.setBorderPainted(false);
+        rightButton.setContentAreaFilled(false);
+        rightButton.setFocusPainted(false);
+        rightButton.setOpaque(false);
+
+        useButton = new JButton(useIcon);
+        useButton.setActionCommand("USE (1 Cycle)");
+        useButton.setBorderPainted(false);
+        useButton.setContentAreaFilled(false);
+        useButton.setFocusPainted(false);
+        useButton.setOpaque(false);
+
+        emptyButton = new JButton(emptyIcon);
+        emptyButton.setActionCommand("EMPTY DUST");
+        emptyButton.setBorderPainted(false);
+        emptyButton.setContentAreaFilled(false);
+        emptyButton.setFocusPainted(false);
+        emptyButton.setOpaque(false);
+
+        chargeButton = new JButton(chargeIcon);
+        chargeButton.setActionCommand("CHARGE (30s Wait)");
+        chargeButton.setBorderPainted(false);
+        chargeButton.setContentAreaFilled(false);
+        chargeButton.setFocusPainted(false);
+        chargeButton.setOpaque(false);
 
         // 5. Add Action Listeners
-        upButton.addActionListener(this);
-        downButton.addActionListener(this);
+        leftButton.addActionListener(this);
+        rightButton.addActionListener(this);
         useButton.addActionListener(this);
         emptyButton.addActionListener(this);
         chargeButton.addActionListener(this);
 
-        // 6. Add Buttons to the Control Panel
-        controlPanel.add(upButton);
-        controlPanel.add(downButton);
-        controlPanel.add(useButton);
-        controlPanel.add(emptyButton);
-        controlPanel.add(chargeButton);
-        controlPanel.add(new JLabel("")); // Empty space
+        // 6. Reworked Button Layout using Nested Panels for Asymmetric Grid
+
+        // Panel for Row 1: LEFT | USE | RIGHT (3 Columns)
+        JPanel row1Panel = new JPanel(new GridLayout(1, 3, 10, 10));
+        row1Panel.setBackground(LIGHT_BACKGROUND);
+
+        row1Panel.add(leftButton);
+        row1Panel.add(useButton);
+        row1Panel.add(rightButton);
+
+        // Panel for Row 2: CHARGE | EMPTY (2 Columns)
+        JPanel row2Panel = new JPanel(new GridLayout(1, 2, 10, 10));
+        row2Panel.setBackground(LIGHT_BACKGROUND);
+
+        row2Panel.add(chargeButton);
+        row2Panel.add(emptyButton);
+
+        // Stack the two rows vertically
+        JPanel buttonStack = new JPanel();
+        buttonStack.setLayout(new BoxLayout(buttonStack, BoxLayout.Y_AXIS));
+        buttonStack.setBackground(LIGHT_BACKGROUND);
+
+        buttonStack.add(row1Panel);
+        buttonStack.add(Box.createRigidArea(new Dimension(0, 10))); // Vertical Spacer
+        buttonStack.add(row2Panel);
+
+        controlPanel.add(buttonStack, BorderLayout.NORTH); // Put button stack in the NORTH
 
         add(controlPanel, BorderLayout.SOUTH);
 
@@ -94,10 +183,11 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    private void updateStatusDisplay() {
+    // ... (updateStatusDisplay, actionPerformed, handleUseCycle, handleCharging, and main methods remain the same) ...
 
+    private void updateStatusDisplay() {
+        // GIF Logic: Display the appropriate GIF or Paused image based on state
         if (vacuumCleaner.getPowerState() && !vacuumCleaner.isCharging()) {
-            // Select GIF based on strength level
             int strength = vacuumCleaner.getSuctionLevel();
             if (strength == 1) {
                 gifLabel.setIcon(vacuumGifSlow);
@@ -108,19 +198,19 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
             }
         } else {
             gifLabel.setIcon(vacuumPaused);
-
         }
 
         String powerStatus = vacuumCleaner.isCharging()
                 ? "CHARGING"
                 : (vacuumCleaner.getPowerState() ? "ON" : "OFF");
 
+        // APPLY COLOR 5: Ensure HTML text uses the dark accent color
         String statusText = String.format(
-                "<html><div style='text-align: center;'>" +
-                        "<h2>VACUUM STATUS</h2>" +
+                "<html><div style='text-align: center; color: #192B7E;'>" +
+                        "<h2>VACUUM BOT STATUS</h2>" +
                         "🔋 Battery: <b>%d%%</b><br>" +
                         "🌪️ Strength: <b>%d</b><br>" +
-                        "🗑️ Dirt Level: <b>%d / %d</b> (Max)<br>" +
+                        "🗑️ Dirt Level: <b>%d/%d</b><br>" +
                         "🔌 State: <b>%s</b>" +
                         "</div></html>",
                 vacuumCleaner.getBatteryLevel(),
@@ -137,13 +227,13 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
         String command = e.getActionCommand();
 
         switch (command) {
-            case "Strength UP (MAX 3)":
-                // **FIXED:** Calling your method without the int argument
-                vacuumCleaner.addSuctionLevel();
-                break;
-            case "Strength DOWN (MIN 0)":
-                // **FIXED:** Calling your method without the int argument
+            // Mapped LEFT command to decrease strength (minusSuctionLevel())
+            case "Strength LEFT (MIN 0)":
                 vacuumCleaner.minusSuctionLevel();
+                break;
+            // Mapped RIGHT command to increase strength (addSuctionLevel())
+            case "Strength RIGHT (MAX 3)":
+                vacuumCleaner.addSuctionLevel();
                 break;
             case "USE (1 Cycle)":
                 handleUseCycle();
@@ -188,7 +278,7 @@ public class VacuumCleanerLauncher extends JFrame implements ActionListener {
 
         // SIMULATE THE 30-SECOND WAIT TIME
         JOptionPane.showMessageDialog(this,
-                "Charging started. (Simulating 30 seconds wait).\n" +
+                "Charging started..\n" +
                         "Click OK to instantly complete the charge.",
                 "Charging in Progress...", JOptionPane.WARNING_MESSAGE);
 
